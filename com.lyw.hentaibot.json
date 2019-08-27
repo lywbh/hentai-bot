@@ -1,0 +1,27 @@
+{
+  "ret": 1,
+  "apiver": 9,
+  "name": "hentai-bot",
+  "version": "0.0.1",
+  "version_id": 1,
+  "author": "kamimi",
+  "description": "色图机器人",
+  "event": [
+	{
+      "id": 2,
+      "type": 2,
+      "name": "群消息处理",
+      "function": "groupMsg",
+      "priority": 30000
+    },{
+      "id": 1001,
+      "type": 1001,
+      "name": "酷Q启动事件",
+      "priority": 30000,
+      "function": "startup"
+    }
+  ],
+  "menu": [],
+  "status": [],
+  "auth": [101]
+}
