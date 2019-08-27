@@ -1,6 +1,6 @@
-# hentai-bot QQ色图机器人
+# hentai-bot -- QQ色图机器人
 
-##### yande.re/konachan，图源待增加
+##### [yande.re](http://yande.re) / [konachan](http://konachan.net)，图源待增加
 
 ![sample](https://puu.sh/Ea7tG/ae06bece70.png)
 
