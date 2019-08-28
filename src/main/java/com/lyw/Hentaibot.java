@@ -1,7 +1,6 @@
 package com.lyw;
 
-import com.lyw.config.LocalConfig;
-import com.lyw.config.SourceConfig;
+import com.lyw.modules.SaucenaoModule;
 import com.lyw.modules.YandereModule;
 import com.sobte.cqp.jcq.entity.CQDebug;
 import com.sobte.cqp.jcq.entity.IMsg;
@@ -10,20 +9,24 @@ import com.sobte.cqp.jcq.message.CQCode;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 public class Hentaibot extends HentaiAppAbstract {
 
     private YandereModule yandereModule;
 
+    private SaucenaoModule saucenaoModule;
+
     public int startup() {
-        CQ.logInfo("hentai-bot", "初始化图库...");
-        yandereModule = new YandereModule(SourceConfig.SOURCE_KONACHAN, LocalConfig.LOCAL_PATH);
+        CQ.logInfo("hentai-bot", "初始化图库插件...");
+        yandereModule = new YandereModule();
+        saucenaoModule = new SaucenaoModule();
         CQ.logInfo("hentai-bot", "初始化完毕");
         return 0;
     }
 
     public int groupMsg(int subType, int msgId, long fromGroup, long fromQQ, String fromAnonymous, String msg, int font) {
-        if (yandereModule == null) {
+        if (yandereModule == null || saucenaoModule == null) {
             return IMsg.MSG_IGNORE;
         }
         if (msg.startsWith("!色图")) {
@@ -41,6 +44,18 @@ public class Hentaibot extends HentaiAppAbstract {
                     JcqApp.CQ.logError("hentai-bot", e.getMessage());
                 }
             }
+        } else if (msg.startsWith("!车来")) {
+            String imageStr = new CQCode().getImage(msg.substring(3));
+            String imgUrl = saucenaoModule.findImgUrl(imageStr);
+            Map<String, String> bestMatch = saucenaoModule.bestMatch(imgUrl);
+            if (!bestMatch.isEmpty()) {
+                StringBuilder sb = new StringBuilder();
+                bestMatch.forEach((k, v) -> sb.append(k).append(" --> ").append(v).append("\n"));
+                JcqApp.CQ.sendGroupMsg(fromGroup, sb.toString());
+            } else {
+                JcqApp.CQ.sendGroupMsg(fromGroup, "无匹配源");
+            }
+
         }
         return IMsg.MSG_IGNORE;
     }
