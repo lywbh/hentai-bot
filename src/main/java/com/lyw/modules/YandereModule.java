@@ -34,15 +34,12 @@ public class YandereModule {
     }
 
     public File randomPic() {
-        return randomPic(null);
+        return randomPic("safe");
     }
 
     public File randomPic(String rating) {
-        int page = RandomUtils.getRandomInt(1000) + 1;
-        String finalUrl = url + "?limit=1&page=" + page;
-        if (rating != null) {
-            finalUrl += "&tags=rating:" + rating;
-        }
+        int page = RandomUtils.getRandomInt(20000) + 1;
+        String finalUrl = url + "?limit=1&page=" + page + "&tags=rating:" + rating;
         String response = HttpUtils.get(finalUrl);
         if (response == null) {
             return null;
