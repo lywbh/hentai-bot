@@ -14,6 +14,14 @@
 
 ##### 不指定则默认为s
 
+##### 可以反向搜索出处
+
+```text
+!车来 [图片]
+```
+
+##### 这里直接接了[saucenao](http://saucenao.com/)
+
 ## Installation
 
 1、32位 [JDK(JRE)](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) 1.6以上版本
