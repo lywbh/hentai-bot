@@ -2,12 +2,13 @@ package com.lyw;
 
 import com.lyw.modules.SaucenaoModule;
 import com.lyw.modules.YandereModule;
+import com.lyw.utils.LocalUtils;
 import com.sobte.cqp.jcq.entity.CQDebug;
+import com.sobte.cqp.jcq.entity.CQImage;
 import com.sobte.cqp.jcq.entity.IMsg;
 import com.sobte.cqp.jcq.event.JcqApp;
 import com.sobte.cqp.jcq.message.CQCode;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
@@ -30,23 +31,18 @@ public class Hentaibot extends HentaiAppAbstract {
             return IMsg.MSG_IGNORE;
         }
         if (msg.startsWith("!色图")) {
-            String[] splitMsg = msg.split(" ");
-            File pic;
-            if (splitMsg.length < 2) {
-                pic = yandereModule.randomPic();
-            } else {
-                pic = yandereModule.randomPic(yandereModule.rating(splitMsg[1]));
-            }
-            if (pic != null) {
+            YandereModule.Rating rating = yandereModule.rating(msg.substring(3));
+            CQImage image = yandereModule.randomPic(rating);
+            if (image != null) {
                 try {
-                    JcqApp.CQ.sendGroupMsg(fromGroup, new CQCode().image(pic));
+                    JcqApp.CQ.sendGroupMsg(fromGroup, new CQCode().image(image));
                 } catch (IOException e) {
                     JcqApp.CQ.logError("hentai-bot", e.getMessage());
                 }
             }
         } else if (msg.startsWith("!车来")) {
-            String imageStr = new CQCode().getImage(msg.substring(3));
-            String imgUrl = saucenaoModule.findImgUrl(imageStr);
+            String imageName = new CQCode().getImage(msg.substring(3));
+            String imgUrl = LocalUtils.findImgUrl(imageName);
             Map<String, String> bestMatch = saucenaoModule.bestMatch(imgUrl);
             if (!bestMatch.isEmpty()) {
                 StringBuilder sb = new StringBuilder();
@@ -55,7 +51,6 @@ public class Hentaibot extends HentaiAppAbstract {
             } else {
                 JcqApp.CQ.sendGroupMsg(fromGroup, "无匹配源");
             }
-
         }
         return IMsg.MSG_IGNORE;
     }

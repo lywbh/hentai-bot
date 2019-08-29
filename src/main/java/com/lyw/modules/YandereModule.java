@@ -2,46 +2,50 @@ package com.lyw.modules;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.lyw.config.LocalConfig;
 import com.lyw.config.SourceConfig;
 import com.lyw.utils.HttpUtils;
 import com.lyw.utils.RandomUtils;
 import com.sobte.cqp.jcq.entity.CQImage;
 import com.sobte.cqp.jcq.event.JcqApp;
 
-import java.io.File;
 import java.io.IOException;
 
 public class YandereModule {
 
-    public String rating(String rating) {
+    public enum Rating {
+        UNKNOWN, SAFE, QUESTIONABLE, EXPLICIT
+    }
+
+    public Rating rating(String rating) {
+        rating = rating.trim();
         switch (rating) {
             case "s":
-                return "safe";
+            case "safe":
+                return Rating.SAFE;
             case "q":
-                return "questionable";
+            case "questionable":
+                return Rating.QUESTIONABLE;
             case "e":
-                return "explicit";
+            case "explicit":
+                return Rating.EXPLICIT;
             default:
-                return rating;
+                return Rating.UNKNOWN;
         }
     }
 
-    public File randomPic() {
-        return randomPic("safe");
-    }
-
-    public File randomPic(String rating) {
+    public CQImage randomPic(Rating rating) {
+        if (rating == Rating.UNKNOWN) {
+            rating = Rating.SAFE;
+        }
         int page = RandomUtils.getRandomInt(20000) + 1;
-        String url = SourceConfig.SOURCE_KONACHAN + "?limit=1&page=" + page + "&tags=rating:" + rating;
+        String url = SourceConfig.SOURCE_KONACHAN + "?limit=1&page=" + page + "&tags=rating:" + rating.name().toLowerCase();
         String response = HttpUtils.get(url);
         if (response == null) {
             return null;
         }
         JSONObject respJson = JSON.parseArray(response).getJSONObject(0);
         try {
-            CQImage cqImage = new CQImage(respJson.getString("sample_url"));
-            return cqImage.download(LocalConfig.LOCAL_PATH, "hentai_" + respJson.getInteger("id"));
+            return new CQImage(respJson.getString("sample_url"));
         } catch (IOException e) {
             JcqApp.CQ.logError("hentai-bot", e.getMessage());
             return null;
