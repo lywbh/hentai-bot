@@ -4,7 +4,7 @@
 
 ![sample](https://puu.sh/Ea7tG/ae06bece70.png)
 
-##### 按照图站的分类，有save、questionable、explicit三个级别
+##### 按照图站的分类，有safe、questionable、explicit三个级别
 
 ```text
 !色图 s
@@ -28,7 +28,7 @@
 
 2、按照 [这里](https://cqp.cc/t/37318) 的指引安装java sdk
 
-3、自己编译打包或者到 [release](https://github.com/lywbh/saifu-bot/releases) 下载插件，解压于"/酷Q Pro/app/com.sobte.cqp.jcq"目录下
+3、自己编译打包或者到 [release](https://github.com/lywbh/hentai-bot/releases) 下载插件，解压于"/酷Q Pro/app/com.sobte.cqp.jcq"目录下
 
 4、重启酷Q并到插件管理页启动即可
 
