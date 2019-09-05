@@ -20,6 +20,8 @@
 !车来 [图片]
 ```
 
+![sample](https://puu.sh/EdA3V/6b2e041f27.png)
+
 ##### 这里直接接了[saucenao](http://saucenao.com/)
 
 ## Installation
