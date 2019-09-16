@@ -31,8 +31,24 @@ public class Hentaibot extends HentaiAppAbstract {
             return IMsg.MSG_IGNORE;
         }
         if (msg.startsWith("!色图")) {
-            YandereModule.Rating rating = yandereModule.rating(msg.substring(3));
-            CQImage image = yandereModule.randomPic(rating);
+            String[] splitMsg = msg.split(" ");
+            CQImage image;
+            if (splitMsg.length == 1) {
+                image = yandereModule.randomPic();
+            } else if (splitMsg.length == 2) {
+                YandereModule.Rating rating = yandereModule.rating(splitMsg[1]);
+                if (rating == YandereModule.Rating.UNKNOWN) {
+                    image = yandereModule.randomPic(splitMsg[1]);
+                } else {
+                    image = yandereModule.randomPic(rating);
+                }
+            } else if (splitMsg.length == 3) {
+                YandereModule.Rating rating = yandereModule.rating(splitMsg[1]);
+                image = yandereModule.randomPic(rating, splitMsg[2]);
+            } else {
+                JcqApp.CQ.sendGroupMsg(fromGroup, "指令格式有误，请确认没有多余的空格");
+                return IMsg.MSG_IGNORE;
+            }
             if (image != null) {
                 try {
                     JcqApp.CQ.sendGroupMsg(fromGroup, new CQCode().image(image));

@@ -1,6 +1,7 @@
 package com.lyw.modules;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.lyw.config.SourceConfig;
 import com.lyw.utils.HttpUtils;
@@ -33,17 +34,44 @@ public class YandereModule {
         }
     }
 
+    public CQImage randomPic() {
+        return randomPic(Rating.SAFE, null);
+    }
+
     public CQImage randomPic(Rating rating) {
+        return randomPic(rating, null);
+    }
+
+    public CQImage randomPic(String tags) {
+        return randomPic(Rating.SAFE, tags);
+    }
+
+    public CQImage randomPic(Rating rating, String tags) {
+        return randomPic(rating, tags, 100);
+    }
+
+    private CQImage randomPic(Rating rating, String tags, int bound) {
+        if (bound == 0) {
+            return null;
+        }
         if (rating == Rating.UNKNOWN) {
             rating = Rating.SAFE;
         }
-        int page = RandomUtils.getRandomInt(20000) + 1;
-        String url = SourceConfig.SOURCE_KONACHAN + "?limit=1&page=" + page + "&tags=rating:" + rating.name().toLowerCase();
+        if (tags == null) {
+            tags = "";
+        }
+        int page = RandomUtils.getRandomInt(bound) + 1;
+        String url = SourceConfig.SOURCE_KONACHAN + "?limit=100&page=" + page + "&tags=" + tags + "%20rating:" + rating.name().toLowerCase();
         String response = HttpUtils.get(url);
         if (response == null) {
             return null;
         }
-        JSONObject respJson = JSON.parseArray(response).getJSONObject(0);
+        JSONArray respArray = JSON.parseArray(response);
+        if (respArray.isEmpty()) {
+            return randomPic(rating, tags, bound / 2);
+        }
+        int rc = RandomUtils.getRandomInt(respArray.size());
+        JSONObject respJson = respArray.getJSONObject(rc);
         try {
             return new CQImage(respJson.getString("sample_url"));
         } catch (IOException e) {
